@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_COMPOSE_VERSION = '1.29.2'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from GitHub repository
+                git 'https://github.com/shivagorasa/soulpage_demo.git'
+            }
+        }
+        
+        stage('Build and Deploy') {
+            steps {
+                // Install Docker Compose
+                script {
+                    sh "sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+                    sh 'sudo chmod +x /usr/local/bin/docker-compose'
+                }
+                
+                // Run Docker Compose
+                sh "docker-compose -f ${DOCKER_COMPOSE_FILE} up -d"
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}

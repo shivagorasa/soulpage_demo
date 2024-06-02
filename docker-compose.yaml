@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nextjs:
+    build: /home/ubuntu/fullstack-assignment/frontend
+    ports:
+      - "3000:3000"
+
+  django:
+    build: /home/ubuntu/fullstack-assignment/backend
+    ports:
+      - "8000:8000"
